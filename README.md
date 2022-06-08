@@ -1,5 +1,5 @@
 # WholebodySomatotopicMapping <br>
-Scripts here are related to fMRI dataset 'WholebodySomatotopicMapping' (https://openneuro.org/datasets/ds001769](https://openneuro.org/datasets/ds004044)). <br>
+Scripts here are related to fMRI dataset 'WholebodySomatotopicMapping' (https://openneuro.org/datasets/ds004044). <br>
 
 # Experiment procedure <br>
 1. Acqusition parameter: /MRI_EXP/acq_para/acqusition_parameter.pdf <br>
