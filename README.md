@@ -30,8 +30,7 @@ Discription: performed with Ciftify (https://github.com/edickie/ciftify) <br>
 Code: /preprocess/ciftify_script.py <br>
 
 # General linear model <br>
-Run GLM timeseries analysis on single scan run and combine lower-level analyses to compute subject-level activity estimates using HCP pipelines TaskfMRIAnalysis (https://github.com/Washington-University/HCPpipelines) <br>
-Discription: performed with HCPPipeline version <br>
+Discription: Run GLM timeseries analysis on single scan run and combine lower-level analyses to compute subject-level activity estimates using HCP pipelines TaskfMRIAnalysis (https://github.com/Washington-University/HCPpipelines) <br>
 Code: /GLM/task_analysis.py <br>
 
 # Technical validation <br>
