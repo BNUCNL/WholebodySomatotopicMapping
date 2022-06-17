@@ -1,59 +1,65 @@
 # WholebodySomatotopicMapping <br>
-Scripts here are related to fMRI dataset 'WholebodySomatotopicMapping' (https://openneuro.org/datasets/ds001769](https://openneuro.org/datasets/ds004044)). <br>
 
-# Experiment procedure <br>
-1. Acqusition parameter: /MRI_EXP/acq_para/acqusition_parameter.pdf <br>
-2. Stimuli: /MRI_EXP/stimuli <br>
-3. Experiment procedure for anatomy: /MRI_EXP/mri_anatomy.m <br>
-4. Experiment procedure for motor task: /MRI_EXP/fmri_motor.m <br>
+The code related to fMRI dataset 'WholebodySomatotopicMapping' (https://openneuro.org/datasets/ds004044) are provided here, including experimental programs for collecting data, batch commands for preprocessing, and scripts for analyzing data.
 
-# Preprocess procedure <br>
-In the 'WholebodySomatotopicMapping', we processed a dataset for whole-body somatotopic mapping in humans following a five-step procedure including 1.preprocessing, 2.ICA decomposition, 3.IC classification, 4.artifacts removal and 5.ciftify. <br>
+## Experimental programs
++ **Acqusition parameter**
+  + /MRI_EXP/acq_para/acqusition_parameter.pdf
++ **Stimuli**
+  + /MRI_EXP/stimuli
++ **Structural MRI scan**
+  + /MRI_EXP/mri_anatomy.m
++ **Functional MRI scan**
+  + /MRI_EXP/fmri_motor.m
 
-1. Preprocessing <br>
-Discription: performed with fMRIPrep version 20.2.1 (https://www.fmriprep.org) <br>
-Code: /preprocess/fmriprep_script.py <br>
+## Preprocessing & Denoising
 
-2. ICA decomposition <br>
-Discription: performed with a probabilistic ICA algorithm implemented in the FSL’s MELODIC version 3.15 (https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/MELODIC). <br>
-Code: /preprocess/ICA.py <br>
+We processed the original data, including the following five steps: 
 
-3. IC classification <br>
-Discription: Classification of ICs was done manually using Melview (http://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Melview). <br>
++ **Preprocessing**
+  + Discription: Preprocessing for functional nifti data.
+  + Software: fMRIPrep
+  + Command: `sh fmriprep-docker <nifti-path> <derivatives-path> participant -w <workdir-path> --participant_label <subject> --output-space T1w fsnative --skip-bids-validation --fs-license-file <fs-license-path>`
+  + Batch script: /preprocess/fmriprep_script.py
++ **ICA decomposition**
+  + Discription: Independent component analysis (ICA) to decompose a single or multiple 4D data sets into different spatial and temporal components.
+  + Software: FSL MELODIC
+  + Command: `sh melodic -i <func-data> -o <output-path> -v --nobet --bgthreshold=1 --tr=<TR> -d 0 --mmthresh=0.5 --report`
+  + Batch script: /preprocess/ICA.py
++ **IC classification**
+  + Discription: Classification of ICs was done manually.
+  + Software: FSL Melview
++ **Artifacts removal**
+  + Discription: Remove chosen components (normally obvious scanner-related or physiological artefacts) from original data.
+  + Software: FSL Regfilt
+  + Command: `sh fsl_regfilt -i <func-data> -o <denoised-data> -d melodic_mix -f <artifact-IC>`
+  + Batch script: /preprocess/remove_A-IC.py
++ **Ciftify **
+  + Discription: Will convert a nifti functional / freeserfer output directory into an HCP output directory.
+  + Software: Ciftify
+  + Command: `sh ciftify_subject_fmri --ciftify-work-dir <workdir-path> <func-data> <subject-id> <run-id>`
+  + Batch script: /preprocess/ciftify_script.py
 
-4. Artifacts removal <br>
-Discription: performed with FSL’s MELODIC version 3.15 (https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/MELODIC) <br>
-Code: /preprocess/remove_A-IC.py <br>
+## Technical validation
 
-5. Ciftify <br>
-Discription: performed with Ciftify (https://github.com/edickie/ciftify) <br>
-Code: /preprocess/ciftify_script.py <br>
-
-# General linear model <br>
-Run GLM timeseries analysis on single scan run and combine lower-level analyses to compute subject-level activity estimates using HCP pipelines TaskfMRIAnalysis (https://github.com/Washington-University/HCPpipelines) <br>
-Discription: performed with HCPPipeline version <br>
-Code: /GLM/task_analysis.py <br>
-
-# Technical validation <br>
 Additionally, the technical quality of the datasets was validated in 5 aspects, temporal signal-to-noise ratio (tSNR), framewise displacement (FD), mean representational dissimilarities (MRD), task activation and coverage map. <br>
 
-1. temporal signal-to-noise ratio (tSNR) <br>
-Discription: the temporal signal-to-noise ratio within somatotopic cortices. <br>
-Code: /validation/tSNR.py <br>
++ **Temporal signal-to-noise ratio (tSNR)** 
+  + Discription: the temporal signal-to-noise ratio within somatotopic cortices. 
+  + Code: /validation/tSNR.py 
++ **Framewise displacement (FD)** 
+  + Discription: the distribution of head motion magnitude measured by frame-wise displacement. 
+  + Code: /validation/FD.py 
++ **Mean representational dissimilarities (MRD)** 
+  + Discription: the mean representational dissimilarities(MRD) across all pairs of conditions calculated on each individual. 
+  + Code: /validation/MRD.py 
++ **Task activation** 
+  + Discription: the activation maps from example contrasts. 
+  + Code: /validation/activation_pattern.py 
++ **Coverage map** 
+  + Discription: a voxel-wise description for the brain coverage. 
+  + Code: /validation/coverage_map.py 
 
-2. framewise displacement (FD) <br>
-Discription: the distribution of head motion magnitude measured by frame-wise displacement. <br>
-Code: /validation/FD.py <br>
 
-3. mean representational dissimilarities (MRD) <br>
-Discription: the mean representational dissimilarities(MRD) across all pairs of conditions calculated on each individual. <br>
-Code: /validation/MRD.py <br>
 
-4. task activation <br>
-Discription: the activation maps from example contrasts. <br>
-Code: /validation/activation_pattern.py <br>
-
-5. coverage map <br>
-Discription: a voxel-wise description for the brain coverage. <br>
-Code: /validation/coverage_map.py <br>
 
